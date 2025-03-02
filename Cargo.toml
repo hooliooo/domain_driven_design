@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "budget_byte",
     "ddd",
     "ddd_macros",
 ]
