@@ -1,0 +1,18 @@
+[package]
+name = "ddd"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "ddd"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ddd_macros = { version = "0.1.0", optional = true, path = "../ddd_macros" }
+
+[features]
+default = ["derive"]
+
+# Provides `derive` macros.
+derive = ["ddd_macros"]
