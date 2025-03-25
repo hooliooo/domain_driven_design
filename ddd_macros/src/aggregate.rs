@@ -39,8 +39,12 @@ pub fn generate_aggregate(ast: DeriveInput) -> TokenStream {
                         Self { id }
                     }
 
-                    pub fn value(&self) -> &#id_type {
+                    pub fn value_as_ref(&self) -> &#id_type {
                         &self.id
+                    }
+
+                    pub fn value(self) -> #id_type {
+                        self.id
                     }
                 }
 
