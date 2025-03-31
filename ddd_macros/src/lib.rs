@@ -2,6 +2,7 @@ use proc_macro::TokenStream;
 use syn::DeriveInput;
 
 mod aggregate;
+mod domain_event;
 mod entity;
 mod value_object;
 mod generate_fields;
@@ -46,6 +47,15 @@ pub fn value_object_macro(item: TokenStream) -> TokenStream {
     let ast: DeriveInput = syn::parse_macro_input!(item as DeriveInput);
     // generate
     value_object::generate_value_object(ast)
+}
+
+/// Generates the boilerplate code for a DomainEvent
+#[proc_macro_derive(DomainEvent)]
+pub fn domain_event_macro(item: TokenStream) -> TokenStream {
+    // parse
+    let ast: DeriveInput = syn::parse_macro_input!(item as DeriveInput);
+    // generate
+    domain_event::generate_domain_event(ast)
 }
 
 /// Turns a string into snake case
