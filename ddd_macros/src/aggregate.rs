@@ -54,7 +54,7 @@ pub fn generate_aggregate(ast: DeriveInput) -> TokenStream {
                     }
                 }
 
-                impl ddd::traits::aggregate_root_id::AggregateRootId for #id_identity {}
+                impl ddd::traits::aggregate_id::AggregateId for #id_identity {}
             )
         }
         None => quote::quote!(),

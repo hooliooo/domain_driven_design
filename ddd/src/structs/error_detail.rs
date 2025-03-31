@@ -1,16 +1,13 @@
-use std::{
-    borrow::Borrow,
-    hash::Hash,
-};
+use std::{borrow::Borrow, hash::Hash};
 
 #[derive(Eq, PartialEq, Hash, Debug, Clone)]
 pub struct ErrorDetail {
-    key: &'static str,
+    key: String,
     message: String,
 }
 
 impl ErrorDetail {
-    pub fn new(key: &'static str, message: String) -> Self {
+    pub fn new(key: String, message: String) -> Self {
         ErrorDetail { key, message }
     }
 
