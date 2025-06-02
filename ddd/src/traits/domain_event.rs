@@ -1,8 +1,6 @@
+use crate::enums::environment::Environment;
 use std::hash::Hash;
 
-use ddd_macros::DomainEvent;
-
-use crate::enums::environment::Environment;
 ///
 /// ```
 /// #![cfg(feature = "derive")]
@@ -43,20 +41,20 @@ use crate::enums::environment::Environment;
 /// let d = CreatedAccount::new(uuid::Uuid::new_v4());
 ///
 /// ```
-pub trait DomainEvent<'a> {
-    type CommandId: Eq + PartialEq + Hash + Clone;
+pub trait DomainEvent {
+    type CommandId: Eq + PartialEq + Hash + Copy + Clone;
     /// The unique identifier of the Command that created this Domain event
-    fn command_id(&'a self) -> &'a Self::CommandId;
+    fn command_id(&self) -> &Self::CommandId;
 
-    type EventId: Eq + PartialEq + Hash + Clone;
+    type EventId: Eq + PartialEq + Hash + Copy + Clone;
     /// The unique identifier of the Domain Event
-    fn event_id(&'a self) -> &'a Self::EventId;
+    fn event_id(&self) -> &Self::EventId;
 
-    type IssuerId: Eq + PartialEq + Hash + Clone;
+    type IssuerId: Eq + PartialEq + Hash + Copy + Clone;
     /// The identifier of the issuer of the command
-    fn issuer_id(&'a self) -> &'a Self::IssuerId;
+    fn issuer_id(&self) -> &Self::IssuerId;
 
-    fn issued_at(&'a self) -> &'a chrono::DateTime<chrono::Utc>;
+    fn issued_at(&self) -> &chrono::DateTime<chrono::Utc>;
 
-    fn environment(&'a self) -> &'a Environment;
+    fn environment(&self) -> &Environment;
 }

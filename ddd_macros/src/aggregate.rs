@@ -1,11 +1,12 @@
+use crate::entity;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use syn::{Data, DeriveInput, Field, Ident, Type};
-use crate::entity;
 
 pub fn generate_aggregate(ast: DeriveInput) -> TokenStream {
     let entity_ast = ast.clone();
     let identity = ast.ident;
+    let generics = ast.generics;
 
     let fields: Vec<Field> = match ast.data {
         Data::Struct(data) => data.fields.into_iter().collect(),
@@ -65,7 +66,7 @@ pub fn generate_aggregate(ast: DeriveInput) -> TokenStream {
     quote::quote!(
         #generated_id_quote
 
-        impl ddd::traits::aggregate::Aggregate for #identity {
+        impl #generics ddd::traits::aggregate::Aggregate #generics for #identity #generics {
 
             fn type_name() -> &'static str {
                 #identity_name

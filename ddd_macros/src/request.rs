@@ -3,6 +3,7 @@ use syn::{Data, DeriveInput, Field};
 
 pub fn generate_request(ast: DeriveInput) -> TokenStream {
     let identity = ast.ident;
+    let generics = ast.generics;
     let fields: Vec<Field> = match ast.data {
         Data::Struct(data) => data.fields.into_iter().collect(),
         _ => panic!("Not a struct"),
@@ -32,27 +33,27 @@ pub fn generate_request(ast: DeriveInput) -> TokenStream {
 
     quote::quote!(
 
-        impl <'a> ddd::traits::request::Request<'a> for #identity {
+        impl #generics ddd::traits::request::Request #generics for #identity #generics {
             type RequestId = ddd::structs::ids::RequestId;
             type IssuerId = #issuer_id_type;
 
-            fn request_id(&'a self) -> &'a Self::RequestId {
+            fn request_id(&self) -> &Self::RequestId {
                 &self.request_id
             }
 
-            fn environment(&'a self) -> &'a ddd::enums::environment::Environment {
+            fn environment(&self) -> &ddd::enums::environment::Environment {
                 &self.environment
             }
 
-            fn issuer_id(&'a self) -> &'a Self::IssuerId {
+            fn issuer_id(&self) -> &Self::IssuerId {
                 &self.issuer_id
             }
 
-            fn issued_at(&'a self) -> &'a chrono::DateTime<chrono::Utc> {
+            fn issued_at(&self) -> &chrono::DateTime<chrono::Utc> {
                 &self.issued_at
             }
 
         }
-    ).into()
-
+    )
+    .into()
 }

@@ -1,10 +1,10 @@
 use crate::traits::value_object::ValueObject;
 
-#[derive(Eq, PartialEq, Hash, Clone, Debug)]
+#[derive(Eq, PartialEq, Hash, Clone, Copy, Debug)]
 pub enum Environment {
     Development,
     Staging,
-    Production
+    Production,
 }
 
 impl Environment {
@@ -12,7 +12,7 @@ impl Environment {
         match self {
             Environment::Development => "development",
             Environment::Staging => "staging",
-            Environment::Production => "production"
+            Environment::Production => "production",
         }
     }
 }

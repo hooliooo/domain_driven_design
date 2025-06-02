@@ -3,6 +3,7 @@ use syn::{Data, DeriveInput, Field};
 
 pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
     let identity = ast.ident;
+    let generics = ast.generics;
     let fields: Vec<Field> = match ast.data {
         Data::Struct(data) => data.fields.into_iter().collect(),
         _ => panic!("Not a struct"),
@@ -37,32 +38,32 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
 
     quote::quote!(
 
-        impl <'a> ddd::traits::domain_event::DomainEvent<'a> for #identity {
+        impl #generics ddd::traits::domain_event::DomainEvent #generics for #identity #generics {
             type CommandId = ddd::structs::ids::CommandId;
             type EventId = ddd::structs::ids::EventId;
             type IssuerId = #issuer_id_type;
 
-            fn command_id(&'a self) -> &'a Self::CommandId {
+            fn command_id(&self) -> &Self::CommandId {
                 &self.command_id
             }
 
-            fn environment(&'a self) -> &'a ddd::enums::environment::Environment {
+            fn environment(&self) -> &ddd::enums::environment::Environment {
                 &self.environment
             }
 
-            fn event_id(&'a self) -> &'a Self::EventId {
+            fn event_id(&self) -> &Self::EventId {
                 &self.event_id
             }
 
-            fn issuer_id(&'a self) -> &'a Self::IssuerId {
+            fn issuer_id(&self) -> &Self::IssuerId {
                 &self.issuer_id
             }
 
-            fn issued_at(&'a self) -> &'a chrono::DateTime<chrono::Utc> {
+            fn issued_at(&self) -> &chrono::DateTime<chrono::Utc> {
                 &self.issued_at
             }
 
         }
-    ).into()
-
+    )
+    .into()
 }

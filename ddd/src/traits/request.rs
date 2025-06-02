@@ -4,10 +4,10 @@ use chrono::{DateTime, Utc};
 
 use crate::enums::environment::Environment;
 
-/// ```
+///
 /// A Request is a Command that mutates an Aggregate or a Query that returns data. The trait defines the required metadata in a
 /// Command-Query Responsibility Segregation (CQRS) architecture
-///
+/// ```
 /// #![cfg(feature = "derive")]
 /// use ddd::Request;
 /// use ddd::traits::request::Request;
@@ -39,16 +39,16 @@ use crate::enums::environment::Environment;
 /// let c = CreateAccount::new(uuid::Uuid::new_v4());
 /// let d = CreateAccount::new(uuid::Uuid::new_v4());
 /// ```
-pub trait Request<'a> {
-    type RequestId: Eq + PartialEq + Hash + Clone;
+pub trait Request {
+    type RequestId: Eq + PartialEq + Hash + Clone + Copy;
     /// The unique identifier of the Request
-    fn request_id(&'a self) -> &'a Self::RequestId;
+    fn request_id(&self) -> &Self::RequestId;
 
-    type IssuerId: Eq + PartialEq + Hash + Clone;
+    type IssuerId: Eq + PartialEq + Hash + Clone + Copy;
     /// The identifier of the issuer of the command
-    fn issuer_id(&'a self) -> &'a Self::IssuerId;
+    fn issuer_id(&self) -> &Self::IssuerId;
 
-    fn environment(&'a self) -> &'a Environment;
+    fn environment(&self) -> &Environment;
 
-    fn issued_at(&'a self) -> &'a DateTime<Utc>;
+    fn issued_at(&self) -> &DateTime<Utc>;
 }
