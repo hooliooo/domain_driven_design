@@ -36,9 +36,10 @@ pub fn generate_entity(ast: DeriveInput) -> TokenStream {
 
     let getters = generate_fields(&identity, filtered_fields);
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
 
-        impl #generics ddd::traits::entity::Entity #generics for #identity #generics {
+        impl #impl_generics ddd::traits::entity::Entity #ty_generics for #identity #where_clause {
             type Id = #id_field_type;
 
             fn id(&self) -> &Self::Id {

@@ -63,10 +63,11 @@ pub fn generate_aggregate(ast: DeriveInput) -> TokenStream {
     let entity_quote: proc_macro2::TokenStream = entity::generate_entity(entity_ast).into();
     let identity_name = super::to_snake_case(identity.clone().to_string());
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
         #generated_id_quote
 
-        impl #generics ddd::traits::aggregate::Aggregate #generics for #identity #generics {
+        impl #impl_generics ddd::traits::aggregate::Aggregate #ty_generics for #identity #where_clause {
 
             fn type_name() -> &'static str {
                 #identity_name

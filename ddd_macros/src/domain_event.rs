@@ -36,9 +36,10 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
         .find(|field| field.ident.as_ref().unwrap() == "issued_at")
         .expect("No issued at field found.");
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
 
-        impl #generics ddd::traits::domain_event::DomainEvent #generics for #identity #generics {
+        impl #impl_generics ddd::traits::domain_event::DomainEvent #ty_generics for #identity #where_clause {
             type CommandId = ddd::structs::ids::CommandId;
             type EventId = ddd::structs::ids::EventId;
             type IssuerId = #issuer_id_type;

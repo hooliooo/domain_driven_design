@@ -40,9 +40,9 @@ pub fn generate_value_object_for_struct(
     );
 
     let getters = generate_fields(identity, filtered_fields);
-
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
-        impl #generics ddd::traits::value_object::ValueObject #generics for #identity #generics {}
+        impl #impl_generics ddd::traits::value_object::ValueObject #ty_generics for #identity #where_clause {}
 
         impl Clone for #identity {
             fn clone(&self) -> Self {
@@ -186,8 +186,9 @@ fn generate_value_object_for_enum(
         },
     );
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
-        impl #generics ddd::traits::value_object::ValueObject #generics for #identity #generics {}
+        impl #impl_generics ddd::traits::value_object::ValueObject #ty_generics for #identity #where_clause {}
 
         impl Clone for #identity {
             fn clone(&self) -> Self {
