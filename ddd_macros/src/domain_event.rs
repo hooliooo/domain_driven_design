@@ -40,11 +40,8 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
     quote::quote!(
 
         impl #impl_generics ddd::traits::domain_event::DomainEvent #ty_generics for #identity #where_clause {
-            type CommandId = ddd::structs::ids::CommandId;
-            type EventId = ddd::structs::ids::EventId;
-            type IssuerId = #issuer_id_type;
 
-            fn command_id(&self) -> &Self::CommandId {
+            fn command_id(&self) -> &ddd::structs::ids::CommandId {
                 &self.command_id
             }
 
@@ -52,11 +49,11 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
                 &self.environment
             }
 
-            fn event_id(&self) -> &Self::EventId {
+            fn event_id(&self) -> &ddd::structs::ids::EventId {
                 &self.event_id
             }
 
-            fn issuer_id(&self) -> &Self::IssuerId {
+            fn issuer_id(&self) -> &ddd::structs::ids::IssuerId {
                 &self.issuer_id
             }
 
@@ -64,6 +61,9 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
                 &self.issued_at
             }
 
+            fn as_any(&self) -> &dyn std::any::Any {
+                self
+            }
         }
     )
     .into()

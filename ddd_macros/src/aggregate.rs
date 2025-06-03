@@ -30,7 +30,7 @@ pub fn generate_aggregate(ast: DeriveInput) -> TokenStream {
             let id_identity = Ident::new(id_identity_name.as_str(), Span::call_site());
             quote::quote!(
                 // Generate the ID struct of the struct
-                #[derive(PartialEq, Eq, Hash, Clone, Debug)]
+                #[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
                 pub struct #id_identity {
                     id: #id_type
                 }

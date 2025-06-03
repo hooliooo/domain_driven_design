@@ -8,7 +8,7 @@ use crate::enums::environment::Environment;
 /// A Request is a Command that mutates an Aggregate or a Query that returns data. The trait defines the required metadata in a
 /// Command-Query Responsibility Segregation (CQRS) architecture
 /// ```
-/// #![cfg(feature = "derive")]
+///
 /// use ddd::Request;
 /// use ddd::traits::request::Request;
 /// use ddd::structs::ids::RequestId;

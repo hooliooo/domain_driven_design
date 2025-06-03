@@ -1,7 +1,7 @@
+pub mod enums;
 pub mod macros;
 pub mod structs;
 pub mod traits;
-pub mod enums;
 
-#[cfg(feature = "derive")]
+// #[cfg(feature = "derive")]
 pub use ddd_macros::*;

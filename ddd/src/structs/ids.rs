@@ -64,3 +64,20 @@ impl RequestId {
 }
 
 impl ValueObject for RequestId {}
+
+#[derive(Eq, PartialEq, Hash, Clone, Copy, Debug)]
+pub struct IssuerId {
+    value: Uuid,
+}
+
+impl IssuerId {
+    pub fn new(value: Uuid) -> Self {
+        Self { value }
+    }
+
+    pub fn value(&self) -> &Uuid {
+        &self.value
+    }
+}
+
+impl ValueObject for IssuerId {}

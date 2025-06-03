@@ -1,6 +1,6 @@
 use std::{borrow::Borrow, hash::Hash};
 
-#[derive(Eq, PartialEq, Hash, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct ErrorDetail {
     key: String,
     message: String,
@@ -18,36 +18,39 @@ impl ErrorDetail {
     pub fn message(&self) -> &String {
         &self.message
     }
-
-    pub fn by_key(self) -> ErrorDetailByKey {
-        ErrorDetailByKey(self)
-    }
 }
 
-#[derive(Debug)]
-pub struct ErrorDetailByKey(ErrorDetail);
-impl ErrorDetailByKey {
-    pub fn message(&self) -> &String {
-        self.0.message()
-    }
-}
-
-impl Borrow<str> for ErrorDetailByKey {
-    fn borrow(&self) -> &str {
-        self.0.key()
-    }
-}
-
-impl PartialEq for ErrorDetailByKey {
+impl PartialEq for ErrorDetail {
     fn eq(&self, other: &Self) -> bool {
-        self.0.key() == other.0.key()
+        self.key() == other.key()
     }
 }
 
-impl Eq for ErrorDetailByKey {}
+impl Eq for ErrorDetail {}
 
-impl Hash for ErrorDetailByKey {
+impl Hash for ErrorDetail {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.key().hash(state);
+        self.key().hash(state);
+    }
+}
+
+impl Borrow<str> for ErrorDetail {
+    fn borrow(&self) -> &str {
+        self.key()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::collections::HashSet;
+
+    use super::ErrorDetail;
+
+    #[test]
+    fn test_hashset_get() {
+        let detail = ErrorDetail::new("error.user.invalid-name".into(), "Bad name".into());
+        let mut details: HashSet<ErrorDetail> = HashSet::new();
+        details.insert(detail);
+        assert!(details.contains("error.user.invalid-name"))
     }
 }
