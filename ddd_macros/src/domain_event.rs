@@ -24,12 +24,10 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
         .find(|field| field.ident.as_ref().unwrap() == "event_id")
         .expect("No event id field found.");
 
-    let issuer_id_field = fields
+    let _ = fields
         .iter()
         .find(|field| field.ident.as_ref().unwrap() == "issuer_id")
         .expect("No issuer id field found.");
-
-    let issuer_id_type = &issuer_id_field.ty;
 
     let _ = fields
         .iter()
