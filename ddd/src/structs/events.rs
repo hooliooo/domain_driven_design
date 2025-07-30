@@ -33,7 +33,7 @@ impl EventBus {
     }
 }
 
-pub trait EventEmitter {
+pub trait EventEmitter: Sync + Send {
     /// Publishes a DomainEvent to a topic
     /// # Arguments
     /// * `topic` - The topic the DomainEvent will be published to. Subscribers listening to the\
