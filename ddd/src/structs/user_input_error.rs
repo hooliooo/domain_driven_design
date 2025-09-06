@@ -2,15 +2,15 @@ use crate::structs::error_detail::ErrorDetail;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UserInputError {
-    error_detail: ErrorDetail,
+    error_detail: ErrorDetail<&'static str>,
 }
 
 impl UserInputError {
-    pub fn new(error_detail: ErrorDetail) -> Self {
+    pub fn new(error_detail: ErrorDetail<&'static str>) -> Self {
         Self { error_detail }
     }
 
-    pub fn error_detail(&self) -> &ErrorDetail {
+    pub fn error_detail(&self) -> &ErrorDetail<&'static str> {
         &self.error_detail
     }
 }
@@ -38,7 +38,7 @@ pub mod axum_extensions {
     impl From<UserInputError> for StatusCodeError {
         fn from(value: UserInputError) -> Self {
             let detail = value.error_detail();
-            StatusCodeError::new(detail.key().to_owned(), detail.message().to_owned())
+            StatusCodeError::new(detail.key().to_string(), detail.message().to_string())
         }
     }
 

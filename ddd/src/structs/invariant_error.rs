@@ -3,15 +3,15 @@ use std::collections::HashSet;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InvariantError {
-    error_details: HashSet<ErrorDetail>,
+    error_details: HashSet<ErrorDetail<&'static str>>,
 }
 
 impl InvariantError {
-    pub fn new(error_details: HashSet<ErrorDetail>) -> Self {
+    pub fn new(error_details: HashSet<ErrorDetail<&'static str>>) -> Self {
         InvariantError { error_details }
     }
 
-    pub fn error_details(&self) -> &HashSet<ErrorDetail> {
+    pub fn error_details(&self) -> &HashSet<ErrorDetail<&'static str>> {
         &self.error_details
     }
 }
@@ -52,7 +52,7 @@ pub mod axum_extensions {
                 .error_details
                 .into_iter()
                 .map(|detail| {
-                    StatusCodeError::new(detail.key().to_owned(), detail.message().to_owned())
+                    StatusCodeError::new(detail.key().to_string(), detail.message().to_string())
                 })
                 .collect();
             StatusCodeErrors::new(errors)

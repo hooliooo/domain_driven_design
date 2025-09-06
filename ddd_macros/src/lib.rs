@@ -68,7 +68,6 @@ pub fn request_macro(item: TokenStream) -> TokenStream {
     request::generate_request(ast)
 }
 
-
 /// Turns a string into snake case
 fn to_snake_case(name: String) -> String {
     let mut snake_case = String::new();
@@ -76,10 +75,11 @@ fn to_snake_case(name: String) -> String {
 
     while let Some(c) = chars.next() {
         if c.is_uppercase() {
-            if let Some(next_char) = chars.peek() {
-                if !snake_case.is_empty() && next_char.is_lowercase() {
-                    snake_case.push('_')
-                }
+            if let Some(next_char) = chars.peek()
+                && !snake_case.is_empty()
+                && next_char.is_lowercase()
+            {
+                snake_case.push('_')
             }
             snake_case.push(c.to_ascii_lowercase())
         } else {
@@ -89,5 +89,5 @@ fn to_snake_case(name: String) -> String {
     snake_case
 }
 
-const FIELD_ATTR: &str  = "field";
+const FIELD_ATTR: &str = "field";
 const ENTITY_ID_ATTR: &str = "entity_id";
