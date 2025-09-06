@@ -27,3 +27,25 @@ impl std::fmt::Display for UserInputError {
 }
 
 impl std::error::Error for UserInputError {}
+
+#[cfg(feature = "axum")]
+pub mod axum_extensions {
+
+    use axum::{Json, http::StatusCode, response::IntoResponse};
+
+    use crate::structs::{axum_extensions::StatusCodeError, user_input_error::UserInputError};
+
+    impl From<UserInputError> for StatusCodeError {
+        fn from(value: UserInputError) -> Self {
+            let detail = value.error_detail();
+            StatusCodeError::new(detail.key().to_owned(), detail.message().to_owned())
+        }
+    }
+
+    impl IntoResponse for UserInputError {
+        fn into_response(self) -> axum::response::Response {
+            let error_response: StatusCodeError = self.into();
+            (StatusCode::UNPROCESSABLE_ENTITY, Json(error_response)).into_response()
+        }
+    }
+}
