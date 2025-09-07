@@ -9,6 +9,7 @@ pub mod axum_extensions {
 
     #[derive(serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
+    #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
     pub struct StatusCodeError {
         pub error_key: String,
         pub description: String,
@@ -25,6 +26,7 @@ pub mod axum_extensions {
 
     #[derive(serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
+    #[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
     pub struct StatusCodeErrors {
         pub errors: Vec<StatusCodeError>,
     }

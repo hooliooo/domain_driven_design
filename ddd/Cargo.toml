@@ -14,6 +14,7 @@ chrono = { version = "0.4.41" }
 ddd_macros = { version = "0.1.0", path = "../ddd_macros" }
 serde = { version = "1.0.219", features = ["derive"], optional = true }
 serde_json = { version = "1.0.143", optional = true }
+utoipa = { version = "5.4.0", features = ["macros"] }
 uuid = { version = "1.17.0", features = ["v4", "v7"] }
 
 [features]
@@ -21,3 +22,4 @@ uuid = { version = "1.17.0", features = ["v4", "v7"] }
 #
 # Provides `derive` macros.
 axum = ["dep:axum", "dep:serde", "dep:serde_json"]
+utoipa = []
