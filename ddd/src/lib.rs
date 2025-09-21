@@ -16,22 +16,20 @@ pub mod validator_extensions {
     use validator::ValidationErrors;
 
     pub trait ResultValidation<T: Aggregate> {
-        fn into_invariant_error<'a>(self) -> Result<T, InvariantError<'a>>;
+        fn map_err_as_invariant_error<'a>(self) -> Result<T, InvariantError<'a>>;
     }
 
     impl<T> ResultValidation<T> for Result<T, ValidationErrors>
     where
         T: Aggregate,
     {
-        fn into_invariant_error<'a>(self) -> Result<T, InvariantError<'a>> {
+        fn map_err_as_invariant_error<'a>(self) -> Result<T, InvariantError<'a>> {
             self.map_err(|err| {
                 let errors = err
                     .0
                     .into_iter()
                     .filter_map(|(key, value)| {
-                        use validator::ValidationErrorsKind;
-
-                        if let ValidationErrorsKind::Field(errors) = value {
+                        if let validator::ValidationErrorsKind::Field(errors) = value {
                             Some((key, errors))
                         } else {
                             None
