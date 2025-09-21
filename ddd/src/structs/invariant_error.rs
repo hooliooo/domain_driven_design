@@ -2,21 +2,21 @@ use super::error_detail::ErrorDetail;
 use std::{collections::HashSet, fmt::Display};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct InvariantError<'a> {
-    error_details: HashSet<ErrorDetail<'a>>,
+pub struct InvariantError {
+    error_details: HashSet<ErrorDetail>,
 }
 
-impl<'a> InvariantError<'a> {
-    pub fn new(error_details: HashSet<ErrorDetail<'a>>) -> Self {
+impl InvariantError {
+    pub fn new(error_details: HashSet<ErrorDetail>) -> Self {
         InvariantError { error_details }
     }
 
-    pub fn error_details(&self) -> &HashSet<ErrorDetail<'a>> {
+    pub fn error_details(&self) -> &HashSet<ErrorDetail> {
         &self.error_details
     }
 }
 
-impl<'a> Display for InvariantError<'a> {
+impl Display for InvariantError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let error_string = self
             .error_details
@@ -34,7 +34,7 @@ impl<'a> Display for InvariantError<'a> {
     }
 }
 
-impl<'a> std::error::Error for InvariantError<'a> {}
+impl std::error::Error for InvariantError {}
 
 #[cfg(feature = "axum")]
 pub mod axum_extensions {
@@ -46,7 +46,7 @@ pub mod axum_extensions {
         status_code_error::axum_extensions::{StatusCodeError, StatusCodeErrors},
     };
 
-    impl<'a> From<InvariantError<'a>> for StatusCodeErrors {
+    impl From<InvariantError> for StatusCodeErrors {
         fn from(value: InvariantError) -> Self {
             let errors: Vec<StatusCodeError> = value
                 .error_details
@@ -59,7 +59,7 @@ pub mod axum_extensions {
         }
     }
 
-    impl<'a> IntoResponse for InvariantError<'a> {
+    impl IntoResponse for InvariantError {
         fn into_response(self) -> axum::response::Response {
             let error_response: StatusCodeErrors = self.into();
             (StatusCode::UNPROCESSABLE_ENTITY, Json(error_response)).into_response()

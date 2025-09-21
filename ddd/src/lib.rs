@@ -16,14 +16,14 @@ pub mod validator_extensions {
     use validator::ValidationErrors;
 
     pub trait ResultValidation<T: Aggregate> {
-        fn map_err_as_invariant_error<'a>(self) -> Result<T, InvariantError<'a>>;
+        fn map_err_as_invariant_error<'a>(self) -> Result<T, InvariantError>;
     }
 
     impl<T> ResultValidation<T> for Result<T, ValidationErrors>
     where
         T: Aggregate,
     {
-        fn map_err_as_invariant_error<'a>(self) -> Result<T, InvariantError<'a>> {
+        fn map_err_as_invariant_error<'a>(self) -> Result<T, InvariantError> {
             self.map_err(|err| {
                 let errors = err
                     .0
@@ -57,7 +57,7 @@ pub mod validator_extensions {
                             })
                         })
                     })
-                    .collect::<HashSet<ErrorDetail<'a>>>();
+                    .collect::<HashSet<ErrorDetail>>();
                 InvariantError::new(errors)
             })
         }

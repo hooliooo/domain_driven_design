@@ -1,21 +1,21 @@
 use crate::structs::error_detail::ErrorDetail;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct UserInputError<'a> {
-    error_detail: ErrorDetail<'a>,
+pub struct UserInputError {
+    error_detail: ErrorDetail,
 }
 
-impl<'a> UserInputError<'a> {
-    pub fn new(error_detail: ErrorDetail<'a>) -> Self {
+impl UserInputError {
+    pub fn new(error_detail: ErrorDetail) -> Self {
         Self { error_detail }
     }
 
-    pub fn error_detail(&self) -> &ErrorDetail<'a> {
+    pub fn error_detail(&self) -> &ErrorDetail {
         &self.error_detail
     }
 }
 
-impl<'a> std::fmt::Display for UserInputError<'a> {
+impl std::fmt::Display for UserInputError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let error_string = format!(
             "{}: {}",
@@ -26,7 +26,7 @@ impl<'a> std::fmt::Display for UserInputError<'a> {
     }
 }
 
-impl<'a> std::error::Error for UserInputError<'a> {}
+impl std::error::Error for UserInputError {}
 
 #[cfg(feature = "axum")]
 pub mod axum_extensions {
@@ -37,14 +37,14 @@ pub mod axum_extensions {
         status_code_error::axum_extensions::StatusCodeError, user_input_error::UserInputError,
     };
 
-    impl<'a> From<UserInputError<'a>> for StatusCodeError {
+    impl From<UserInputError> for StatusCodeError {
         fn from(value: UserInputError) -> Self {
             let detail = value.error_detail();
             StatusCodeError::new(detail.key().to_string(), detail.message().to_string())
         }
     }
 
-    impl<'a> IntoResponse for UserInputError<'a> {
+    impl IntoResponse for UserInputError {
         fn into_response(self) -> axum::response::Response {
             let error_response: StatusCodeError = self.into();
             (StatusCode::UNPROCESSABLE_ENTITY, Json(error_response)).into_response()

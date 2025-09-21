@@ -4,16 +4,16 @@ use std::{
 };
 
 #[derive(Debug, Clone)]
-pub struct ErrorDetail<'a> {
-    key: Cow<'a, str>,
-    message: Cow<'a, str>,
+pub struct ErrorDetail {
+    key: Cow<'static, str>,
+    message: Cow<'static, str>,
 }
 
-impl<'a> ErrorDetail<'a> {
+impl ErrorDetail {
     pub fn new<K, M>(key: K, message: M) -> Self
     where
-        K: Into<Cow<'a, str>>,
-        M: Into<Cow<'a, str>>,
+        K: Into<Cow<'static, str>>,
+        M: Into<Cow<'static, str>>,
     {
         ErrorDetail {
             key: key.into(),
@@ -29,7 +29,7 @@ impl<'a> ErrorDetail<'a> {
         &self.message
     }
 
-    pub const fn new_const(key: &'a str, message: &'a str) -> Self {
+    pub const fn new_const(key: &'static str, message: &'static str) -> Self {
         ErrorDetail {
             key: Cow::Borrowed(key),
             message: Cow::Borrowed(message),
@@ -37,21 +37,21 @@ impl<'a> ErrorDetail<'a> {
     }
 }
 
-impl<'a> PartialEq for ErrorDetail<'a> {
+impl PartialEq for ErrorDetail {
     fn eq(&self, other: &Self) -> bool {
         self.key() == other.key()
     }
 }
 
-impl<'a> Eq for ErrorDetail<'a> {}
+impl Eq for ErrorDetail {}
 
-impl<'a> Hash for ErrorDetail<'a> {
+impl Hash for ErrorDetail {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         self.key().hash(state);
     }
 }
 
-impl<'a> Borrow<str> for ErrorDetail<'a> {
+impl Borrow<str> for ErrorDetail {
     fn borrow(&self) -> &str {
         self.key()
     }

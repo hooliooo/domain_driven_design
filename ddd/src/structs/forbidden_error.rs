@@ -2,15 +2,15 @@ use crate::structs::error_detail::ErrorDetail;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ForbiddenError {
-    error_detail: ErrorDetail<'static>,
+    error_detail: ErrorDetail,
 }
 
 impl ForbiddenError {
-    pub fn new(error_detail: ErrorDetail<'static>) -> Self {
+    pub fn new(error_detail: ErrorDetail) -> Self {
         Self { error_detail }
     }
 
-    pub fn error_detail(&self) -> &ErrorDetail<'static> {
+    pub fn error_detail(&self) -> &ErrorDetail {
         &self.error_detail
     }
 }
