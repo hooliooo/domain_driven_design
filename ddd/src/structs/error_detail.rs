@@ -1,53 +1,84 @@
-use std::{borrow::Borrow, hash::Hash};
+use std::{
+    borrow::{Borrow, Cow},
+    hash::Hash,
+};
 
-#[derive(Eq, PartialEq, Hash, Debug, Clone)]
-pub struct ErrorDetail {
-    key: String,
-    message: String,
+#[derive(Debug, Clone)]
+pub struct ErrorDetail<'a> {
+    key: Cow<'a, str>,
+    message: Cow<'a, str>,
 }
 
-impl ErrorDetail {
-    pub fn new(key: String, message: String) -> Self {
-        ErrorDetail { key, message }
+impl<'a> ErrorDetail<'a> {
+    pub fn new<K, M>(key: K, message: M) -> Self
+    where
+        K: Into<Cow<'a, str>>,
+        M: Into<Cow<'a, str>>,
+    {
+        ErrorDetail {
+            key: key.into(),
+            message: message.into(),
+        }
     }
 
     pub fn key(&self) -> &str {
         &self.key
     }
 
-    pub fn message(&self) -> &String {
+    pub fn message(&self) -> &str {
         &self.message
     }
 
-    pub fn by_key(self) -> ErrorDetailByKey {
-        ErrorDetailByKey(self)
+    pub const fn new_const(key: &'a str, message: &'a str) -> Self {
+        ErrorDetail {
+            key: Cow::Borrowed(key),
+            message: Cow::Borrowed(message),
+        }
     }
 }
 
-#[derive(Debug)]
-pub struct ErrorDetailByKey(ErrorDetail);
-impl ErrorDetailByKey {
-    pub fn message(&self) -> &String {
-        self.0.message()
-    }
-}
-
-impl Borrow<str> for ErrorDetailByKey {
-    fn borrow(&self) -> &str {
-        self.0.key()
-    }
-}
-
-impl PartialEq for ErrorDetailByKey {
+impl<'a> PartialEq for ErrorDetail<'a> {
     fn eq(&self, other: &Self) -> bool {
-        self.0.key() == other.0.key()
+        self.key() == other.key()
     }
 }
 
-impl Eq for ErrorDetailByKey {}
+impl<'a> Eq for ErrorDetail<'a> {}
 
-impl Hash for ErrorDetailByKey {
+impl<'a> Hash for ErrorDetail<'a> {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.key().hash(state);
+        self.key().hash(state);
+    }
+}
+
+impl<'a> Borrow<str> for ErrorDetail<'a> {
+    fn borrow(&self) -> &str {
+        self.key()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::collections::HashSet;
+
+    use super::ErrorDetail;
+
+    #[test]
+    fn test_hashset_get_for_str_error_detail() {
+        let detail = ErrorDetail::new("error.user.invalid-name", "Bad name");
+        let mut details: HashSet<ErrorDetail> = HashSet::new();
+        details.insert(detail);
+        assert!(details.contains("error.user.invalid-name"))
+    }
+
+    #[test]
+    fn test_hashset_get_for_string_error_detail() {
+        let detail = ErrorDetail::new(
+            "error.user.invalid-name".to_string(),
+            "Bad name".to_string(),
+        );
+        let mut details: HashSet<ErrorDetail> = HashSet::new();
+        details.insert(detail);
+        assert!(details.contains("error.user.invalid-name"))
     }
 }

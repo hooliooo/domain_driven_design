@@ -4,7 +4,7 @@ use std::hash::Hash;
 ///
 /// Two value objects are the same if all of their attributes are equal
 /// ```
-/// #![cfg(feature = "derive")]
+///
 ///
 /// use ddd::ValueObject;
 /// use ddd::traits::value_object::ValueObject;

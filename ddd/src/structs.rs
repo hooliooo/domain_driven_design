@@ -1,3 +1,9 @@
-pub mod ids;
+pub mod domain_error;
 pub mod error_detail;
+pub mod events;
+pub mod forbidden_error;
+pub mod ids;
 pub mod invariant_error;
+pub mod role;
+pub mod status_code_error;
+pub mod user_input_error;
