@@ -9,6 +9,7 @@ name = "ddd"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+async-trait = { version = "0.1.89" }
 axum = { version = "0.8.4", features = ["json"], optional = true }
 chrono = { version = "0.4.41" }
 ddd_macros = { version = "0.1.0", path = "../ddd_macros" }
