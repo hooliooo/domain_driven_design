@@ -2,10 +2,7 @@ use std::{collections::HashSet, hash::Hash};
 
 use chrono::{DateTime, Utc};
 
-use crate::{
-    enums::environment::Environment,
-    structs::{ids::UserId, role::Role},
-};
+use crate::{enums::environment::Environment, structs::role::Role};
 
 ///
 /// A Request is a Command that mutates an Aggregate or a Query that returns data. The trait defines the required metadata in a
@@ -21,6 +18,7 @@ use crate::{
 /// use chrono::DateTime;
 /// use chrono::Utc;
 /// use std::collections::HashSet;
+/// use uuid::Uuid;
 ///
 /// #[derive(ddd::AuthenticatedRequest, Debug)]
 /// pub struct CreateAccount {
@@ -28,7 +26,7 @@ use crate::{
 ///     issuer_id: (),
 ///     environment: ddd::enums::environment::Environment,
 ///     issued_at: DateTime<Utc>,
-///     user_id: UserId,
+///     user_id: UserId<Uuid>,
 ///     roles: HashSet<Role>
 /// }
 ///
@@ -60,14 +58,18 @@ pub trait Request {
     /// The identifier of the client that issued the command
     fn issuer_id(&self) -> &Self::IssuerId;
 
+    /// The environment of the request. Useful for observability
     fn environment(&self) -> &Environment;
 
+    /// The timestamp of when the request was issued
     fn issued_at(&self) -> &DateTime<Utc>;
 }
 
 pub trait AuthenticatedRequest: Request {
+    type UserId: Eq + PartialEq + Hash + Clone;
+
     /// The user identifier
-    fn user_id(&self) -> &UserId;
+    fn user_id(&self) -> &Self::UserId;
 
     /// The roles of the user
     fn roles(&self) -> &HashSet<Role>;

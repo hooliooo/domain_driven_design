@@ -83,11 +83,11 @@ impl IssuerId {
 impl ValueObject for IssuerId {}
 
 #[derive(Eq, PartialEq, Hash, Clone, Debug)]
-pub struct UserId {
-    value: Uuid,
+pub struct UserId<T> {
+    value: T,
 }
 
-impl UserId {
+impl<Uuid> UserId<Uuid> {
     pub fn new(value: Uuid) -> Self {
         Self { value }
     }
@@ -97,4 +97,4 @@ impl UserId {
     }
 }
 
-impl ValueObject for UserId {}
+impl ValueObject for UserId<Uuid> {}

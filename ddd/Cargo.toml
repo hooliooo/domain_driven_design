@@ -9,20 +9,20 @@ name = "ddd"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-async-trait = { version = "0.1.89" }
-axum = { version = "0.8.4", features = ["json"], optional = true }
-chrono = { version = "0.4.41" }
+async-trait.workspace = true
+axum = { workspace = true, features = ["json"], optional = true }
+chrono.workspace = true
 ddd_macros = { version = "0.1.0", path = "../ddd_macros" }
-serde = { version = "1.0.219", features = ["derive"], optional = true }
-serde_json = { version = "1.0.143", optional = true }
-utoipa = { version = "5.4.0", features = ["macros"] }
-uuid = { version = "1.17.0", features = ["v4", "v7"] }
-validator = { version = "0.20.0", features = ["derive"], optional = true }
+serde = { workspace = true, features = ["derive"], optional = true }
+serde_json = { workspace = true, optional = true }
+utoipa = { workspace = true, features = ["macros"] }
+uuid = { workspace = true, features = ["v4", "v7"] }
+validator = { workspace = true, features = ["derive"], optional = true }
+
+[dev-dependencies]
+tokio.workspace = true
 
 [features]
-# default = ["derive"]
-#
-# Provides `derive` macros.
 axum = ["dep:axum", "dep:serde", "dep:serde_json"]
 validator = ["dep:validator"]
 utoipa = []

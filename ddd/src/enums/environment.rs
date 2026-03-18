@@ -27,7 +27,7 @@ impl TryFrom<&str> for Environment {
             "development" => Ok(Environment::Development),
             "staging" => Ok(Environment::Staging),
             "production" => Ok(Environment::Production),
-            _ => Err(InvalidEnvironmentError),
+            _ => Err(InvalidEnvironmentError(value.into())),
         }
     }
 }
@@ -43,11 +43,15 @@ impl TryFrom<String> for Environment {
 impl ValueObject for Environment {}
 
 #[derive(Debug)]
-pub struct InvalidEnvironmentError;
+pub struct InvalidEnvironmentError(String);
 
 impl Display for InvalidEnvironmentError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Invalid Environment Error")
+        let message = format!(
+            "Invalid Environment: {}. Valid values are 'development', 'staging', or 'production'.",
+            self.0
+        );
+        write!(f, "{message}")
     }
 }
 

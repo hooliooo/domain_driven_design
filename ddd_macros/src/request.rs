@@ -67,10 +67,12 @@ pub fn generate_authenticated_request(ast: DeriveInput) -> TokenStream {
         _ => panic!("Not a struct"),
     };
 
-    let _ = fields
+    let user_id_field = fields
         .iter()
         .find(|field| field.ident.as_ref().unwrap() == "user_id")
         .expect("No 'user_id' field found.");
+
+    let user_id_type = &user_id_field.ty;
 
     let _ = fields
         .iter()
@@ -86,7 +88,9 @@ pub fn generate_authenticated_request(ast: DeriveInput) -> TokenStream {
 
         impl #impl_generics ddd::traits::request::AuthenticatedRequest #ty_generics for #identity #where_clause {
 
-            fn user_id(&self) -> &ddd::structs::ids::UserId {
+            type UserId = #user_id_type;
+
+            fn user_id(&self) -> &Self::UserId {
                 &self.user_id
             }
 

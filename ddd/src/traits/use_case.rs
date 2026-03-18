@@ -12,18 +12,21 @@ pub trait UseCase: Send + Sync {
     async fn handle(&self, request: Self::Request) -> Self::Response;
 }
 
+#[cfg(test)]
 mod test {
-    use std::sync::Arc;
+    use std::{borrow::Cow, sync::Arc};
 
     use crate::traits::use_case::UseCase;
 
     struct TestUseCase;
     struct TestRequest {
-        pub name: String,
+        pub name: Cow<'static, str>,
     }
     struct TestResponse {
-        pub name: String,
+        pub name: Cow<'static, str>,
     }
+
+    #[derive(Debug)]
     struct TestError {
         pub error: String,
     }
@@ -34,9 +37,7 @@ mod test {
         type Response = Result<TestResponse, TestError>;
 
         async fn handle(&self, request: TestRequest) -> Result<TestResponse, TestError> {
-            Ok(TestResponse {
-                name: "test".to_string(),
-            })
+            Ok(TestResponse { name: request.name })
         }
     }
 
@@ -46,5 +47,29 @@ mod test {
                 + Send
                 + Sync,
         >,
+    }
+
+    #[tokio::test]
+    async fn test() {
+        let use_case = TestUseCase;
+        let state = TestState {
+            use_case: Arc::new(use_case),
+        };
+
+        let handle = tokio::spawn(async move {
+            let request = TestRequest {
+                name: Cow::Borrowed("test"),
+            };
+            state.use_case.handle(request).await
+        });
+
+        match handle.await.unwrap() {
+            Ok(response) => assert_eq!(Cow::Borrowed("test"), response.name),
+            Err(err) => {
+                let error = err.error;
+                let message = format!("Test failed: {}", error);
+                panic!("{message}")
+            }
+        };
     }
 }

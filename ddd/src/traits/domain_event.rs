@@ -59,8 +59,10 @@ pub trait DomainEvent {
     /// The identifier of the client that issued the DomainEvent
     fn issuer_id(&self) -> &IssuerId;
 
+    /// The timestamp of when the domain event was issued
     fn issued_at(&self) -> &chrono::DateTime<chrono::Utc>;
 
+    /// The environment of the domain event. Useful for observability
     fn environment(&self) -> &Environment;
 
     fn as_any(&self) -> &dyn std::any::Any;
