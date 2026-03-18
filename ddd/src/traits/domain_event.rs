@@ -1,6 +1,6 @@
 use crate::{
     enums::environment::Environment,
-    structs::ids::{CommandId, EventId, IssuerId},
+    structs::ids::{CommandId, EventId, AuthorizedParty},
 };
 
 ///
@@ -11,7 +11,7 @@ use crate::{
 /// use ddd::traits::domain_event::DomainEvent;
 /// use ddd::structs::ids::CommandId;
 /// use ddd::structs::ids::EventId;
-/// use ddd::structs::ids::IssuerId;
+/// use ddd::structs::ids::AuthorizedParty;
 /// use chrono::DateTime;
 /// use chrono::Utc;
 /// use uuid::Uuid;
@@ -22,7 +22,7 @@ use crate::{
 ///     command_id: CommandId,
 ///     environment: ddd::enums::environment::Environment,
 ///     event_id: EventId,
-///     issuer_id: IssuerId,
+///     authorized_party: AuthorizedParty,
 ///     issued_at: DateTime<Utc>
 /// }
 ///
@@ -32,7 +32,7 @@ use crate::{
 ///             command_id: CommandId::new(command_id),
 ///             environment: ddd::enums::environment::Environment::Development,
 ///             event_id: EventId::new_random(),
-///             issuer_id: IssuerId::new("test.client".to_string()),
+///             authorized_party: AuthorizedParty::new("test.client".to_string()),
 ///             issued_at: Utc::now()
 ///         }
 ///     }
@@ -57,7 +57,7 @@ pub trait DomainEvent {
     fn event_id(&self) -> &EventId;
 
     /// The identifier of the client that issued the DomainEvent
-    fn issuer_id(&self) -> &IssuerId;
+    fn authorized_party(&self) -> &AuthorizedParty;
 
     /// The timestamp of when the domain event was issued
     fn issued_at(&self) -> &chrono::DateTime<chrono::Utc>;
@@ -79,7 +79,7 @@ pub trait DomainEvent {
 //     use crate::structs::ids::{CommandId, EventId};
 //
 //     #[derive(Eq, PartialEq, Hash, Copy, Clone, Debug)]
-//     struct IssuerId {
+//     struct AuthorizedParty {
 //         id: Uuid,
 //     }
 //
@@ -87,7 +87,7 @@ pub trait DomainEvent {
 //     struct CreateAccount {
 //         command_id: CommandId,
 //         event_id: EventId,
-//         issuer_id: IssuerId,
+//         authorized_party: AuthorizedParty,
 //         environment: Environment,
 //         issued_at: DateTime<Utc>,
 //     }

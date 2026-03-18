@@ -23,7 +23,7 @@ use crate::{enums::environment::Environment, structs::role::Role};
 /// #[derive(ddd::AuthenticatedRequest, Debug)]
 /// pub struct CreateAccount {
 ///     request_id: RequestId,
-///     issuer_id: (),
+///     authorized_party: (),
 ///     environment: ddd::enums::environment::Environment,
 ///     issued_at: DateTime<Utc>,
 ///     user_id: UserId<Uuid>,
@@ -34,7 +34,7 @@ use crate::{enums::environment::Environment, structs::role::Role};
 ///     pub fn new(request_id: uuid::Uuid) -> Self {
 ///         Self {
 ///             request_id: RequestId::new(request_id),
-///             issuer_id: (),
+///             authorized_party: (),
 ///             environment: ddd::enums::environment::Environment::Development,
 ///             issued_at: Utc::now(),
 ///             user_id: UserId::new(uuid::Uuid::new_v4()),
@@ -54,9 +54,9 @@ pub trait Request {
     /// The unique identifier of the Request
     fn request_id(&self) -> &Self::RequestId;
 
-    type IssuerId: Eq + PartialEq + Hash + Clone;
+    type AuthorizedParty: Eq + PartialEq + Hash + Clone;
     /// The identifier of the client that issued the command
-    fn issuer_id(&self) -> &Self::IssuerId;
+    fn authorized_party(&self) -> &Self::AuthorizedParty;
 
     /// The environment of the request. Useful for observability
     fn environment(&self) -> &Environment;

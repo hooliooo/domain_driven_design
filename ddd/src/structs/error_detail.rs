@@ -3,13 +3,20 @@ use std::{
     hash::Hash,
 };
 
+/// An ErrorDetail represents a key value pair that describes an error
 #[derive(Debug, Clone)]
 pub struct ErrorDetail {
+    /// The key of the error
     key: Cow<'static, str>,
+    /// The descriptive message of the error
     message: Cow<'static, str>,
 }
 
 impl ErrorDetail {
+    /// Creates an ErrorDetail.
+    /// # Arguments
+    /// * `key` - The error key
+    /// * `message` - The descriptive error message
     pub fn new<K, M>(key: K, message: M) -> Self
     where
         K: Into<Cow<'static, str>>,
@@ -21,14 +28,20 @@ impl ErrorDetail {
         }
     }
 
+    /// The error key
     pub fn key(&self) -> &str {
         &self.key
     }
 
+    /// The descriptive error message
     pub fn message(&self) -> &str {
         &self.message
     }
 
+    /// Creates an ErrorDetail.
+    /// # Arguments
+    /// * `key` - The error key
+    /// * `message` - The descriptive error message
     pub const fn new_const(key: &'static str, message: &'static str) -> Self {
         ErrorDetail {
             key: Cow::Borrowed(key),

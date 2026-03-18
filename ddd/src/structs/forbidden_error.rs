@@ -1,15 +1,22 @@
 use crate::structs::error_detail::ErrorDetail;
 
+/// A ForbiddenError is an error that is returned when the executor of a business process is not
+/// allowed to execute that process
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ForbiddenError {
+    /// The error detail that describes the ForbiddenError
     error_detail: ErrorDetail,
 }
 
 impl ForbiddenError {
+    /// Creates a ForbiddenError
+    /// # Arguments
+    /// * `error_detail` - The error detail that describes the ForbiddenError
     pub fn new(error_detail: ErrorDetail) -> Self {
         Self { error_detail }
     }
 
+    /// The error detail that describes the ForbiddenError
     pub fn error_detail(&self) -> &ErrorDetail {
         &self.error_detail
     }

@@ -19,12 +19,12 @@ pub fn generate_request(ast: DeriveInput) -> TokenStream {
         .find(|field| field.ident.as_ref().unwrap() == "environment")
         .expect("No 'environment' field found.");
 
-    let issuer_id_field = fields
+    let authorized_party_field = fields
         .iter()
-        .find(|field| field.ident.as_ref().unwrap() == "issuer_id")
-        .expect("No 'issuer_id' field found.");
+        .find(|field| field.ident.as_ref().unwrap() == "authorized_party")
+        .expect("No 'authorized_party' field found.");
 
-    let issuer_id_type = &issuer_id_field.ty;
+    let authorized_party_type = &authorized_party_field.ty;
 
     let _ = fields
         .iter()
@@ -36,7 +36,7 @@ pub fn generate_request(ast: DeriveInput) -> TokenStream {
 
         impl #impl_generics ddd::traits::request::Request #ty_generics for #identity #where_clause {
             type RequestId = ddd::structs::ids::RequestId;
-            type IssuerId = #issuer_id_type;
+            type AuthorizedParty = #authorized_party_type;
 
             fn request_id(&self) -> &Self::RequestId {
                 &self.request_id
@@ -46,8 +46,8 @@ pub fn generate_request(ast: DeriveInput) -> TokenStream {
                 &self.environment
             }
 
-            fn issuer_id(&self) -> &Self::IssuerId {
-                &self.issuer_id
+            fn authorized_party(&self) -> &Self::AuthorizedParty {
+                &self.authorized_party
             }
 
             fn issued_at(&self) -> &chrono::DateTime<chrono::Utc> {

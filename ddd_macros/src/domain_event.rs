@@ -26,7 +26,7 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
 
     let _ = fields
         .iter()
-        .find(|field| field.ident.as_ref().unwrap() == "issuer_id")
+        .find(|field| field.ident.as_ref().unwrap() == "authorized_party")
         .expect("No issuer id field found.");
 
     let _ = fields
@@ -51,8 +51,8 @@ pub fn generate_domain_event(ast: DeriveInput) -> TokenStream {
                 &self.event_id
             }
 
-            fn issuer_id(&self) -> &ddd::structs::ids::IssuerId {
-                &self.issuer_id
+            fn authorized_party(&self) -> &ddd::structs::ids::AuthorizedParty {
+                &self.authorized_party
             }
 
             fn issued_at(&self) -> &chrono::DateTime<chrono::Utc> {

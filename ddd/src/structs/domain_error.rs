@@ -1,15 +1,21 @@
 use crate::structs::error_detail::ErrorDetail;
 
+/// A DomainError is any error that is a violation in the business rules or logic
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DomainError {
+    /// The description of the error
     error_detail: ErrorDetail,
 }
 
 impl DomainError {
+    /// Creates a DomainError
+    /// # Arguments
+    /// * `error_detail` - The detail describing the DomainError
     pub fn new(error_detail: ErrorDetail) -> Self {
         Self { error_detail }
     }
 
+    /// The ErrorDetail describing the DomainError
     pub fn error_detail(&self) -> &ErrorDetail {
         &self.error_detail
     }

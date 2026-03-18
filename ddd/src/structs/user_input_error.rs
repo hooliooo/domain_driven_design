@@ -1,15 +1,21 @@
 use crate::structs::error_detail::ErrorDetail;
 
+/// A UserInputError represents an error due to the user's input
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UserInputError {
+    /// The error detail that describes the UserInputError
     error_detail: ErrorDetail,
 }
 
 impl UserInputError {
+    /// Creates a new UserInputError
+    /// # Arguments
+    /// * `error_detail` - The error detail that describes the UserInputError
     pub fn new(error_detail: ErrorDetail) -> Self {
         Self { error_detail }
     }
 
+    /// The error detail that describes the UserInputError
     pub fn error_detail(&self) -> &ErrorDetail {
         &self.error_detail
     }

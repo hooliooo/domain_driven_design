@@ -1,16 +1,23 @@
 use super::error_detail::ErrorDetail;
 use std::{collections::HashSet, fmt::Display};
 
+/// An InvarianError is a specific type of domain error that represents a violation of a core
+/// business rule, which must always be true.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InvariantError {
+    /// The error details that describe that invariant error
     error_details: HashSet<ErrorDetail>,
 }
 
 impl InvariantError {
+    /// Creates a new InvariantError
+    /// # Arguments
+    /// * `error_details`The error details that describe that invariant error
     pub fn new(error_details: HashSet<ErrorDetail>) -> Self {
         InvariantError { error_details }
     }
 
+    /// The error details that describe that invariant error
     pub fn error_details(&self) -> &HashSet<ErrorDetail> {
         &self.error_details
     }

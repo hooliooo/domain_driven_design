@@ -63,7 +63,7 @@ mod test {
     use uuid::Uuid;
 
     use crate::{
-        structs::ids::{CommandId, EventId, IssuerId},
+        structs::ids::{CommandId, EventId, AuthorizedParty},
         traits::domain_event::DomainEvent,
     };
 
@@ -73,7 +73,7 @@ mod test {
     pub struct CreatedAccount {
         command_id: CommandId,
         environment: crate::enums::environment::Environment,
-        issuer_id: IssuerId,
+        authorized_party: AuthorizedParty,
         event_id: EventId,
         issued_at: DateTime<Utc>,
     }
@@ -84,7 +84,7 @@ mod test {
                 command_id: CommandId::new(command_id),
                 environment: crate::enums::environment::Environment::Development,
                 event_id: EventId::new_random(),
-                issuer_id: IssuerId::new("test.client".to_string()),
+                authorized_party: AuthorizedParty::new("test.client".to_string()),
                 issued_at: Utc::now(),
             }
         }
@@ -99,8 +99,8 @@ mod test {
             &self.event_id
         }
 
-        fn issuer_id(&self) -> &IssuerId {
-            &self.issuer_id
+        fn authorized_party(&self) -> &AuthorizedParty {
+            &self.authorized_party
         }
 
         fn issued_at(&self) -> &chrono::DateTime<chrono::Utc> {
