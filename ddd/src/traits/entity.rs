@@ -6,7 +6,7 @@ use std::hash::Hash;
 /// attributes are different.
 ///
 /// ```
-/// #![cfg(feature = "derive")]
+///
 ///
 /// use ddd::Entity;
 /// use ddd::traits::entity::Entity;

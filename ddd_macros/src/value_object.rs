@@ -1,38 +1,48 @@
-use proc_macro::TokenStream;
-use proc_macro2::{Ident, Span};
-use syn::{Data, DataEnum, DataStruct, DeriveInput, Field, Fields};
 use crate::FIELD_ATTR;
 use crate::generate_fields::generate_fields;
-
+use proc_macro::TokenStream;
+use proc_macro2::{Ident, Span};
+use syn::{Data, DataEnum, DataStruct, DeriveInput, Field, Fields, Generics};
 
 pub fn generate_value_object(ast: DeriveInput) -> TokenStream {
     let identity = ast.ident;
+    let generics = ast.generics;
 
     match ast.data {
-        Data::Struct(data) => generate_value_object_for_struct(&identity, data),
-        Data::Enum(data) => generate_value_object_for_enum(&identity, data),
+        Data::Struct(data) => generate_value_object_for_struct(&identity, &generics, data),
+        Data::Enum(data) => generate_value_object_for_enum(&identity, &generics, data),
         _ => panic!("Not a struct"),
     }
 }
 
-pub fn generate_value_object_for_struct(identity: &Ident, data: DataStruct) -> TokenStream {
+pub fn generate_value_object_for_struct(
+    identity: &Ident,
+    generics: &Generics,
+    data: DataStruct,
+) -> TokenStream {
     let fields: Vec<Field> = data.fields.into_iter().collect();
-    let MetaData(filtered_fields, field) = fields.into_iter()
-        .fold(MetaData(Vec::default(), Vec::default()), |mut data, field| {
-            if field.attrs.iter().any(|attr| attr.path().is_ident(FIELD_ATTR)) {
+    let MetaData(filtered_fields, field) = fields.into_iter().fold(
+        MetaData(Vec::default(), Vec::default()),
+        |mut data, field| {
+            if field
+                .attrs
+                .iter()
+                .any(|attr| attr.path().is_ident(FIELD_ATTR))
+            {
                 data.0.push(field.clone())
             }
 
-            if let Some(ident) = field.ident.map(|x| x.clone()) {
+            if let Some(ident) = field.ident {
                 data.1.push(ident)
             }
             data
-        });
+        },
+    );
 
-    let getters = generate_fields(&identity, filtered_fields);
-
+    let getters = generate_fields(identity, filtered_fields);
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
-        impl ddd::traits::value_object::ValueObject for #identity {}
+        impl #impl_generics ddd::traits::value_object::ValueObject #ty_generics for #identity #where_clause {}
 
         impl Clone for #identity {
             fn clone(&self) -> Self {
@@ -59,13 +69,21 @@ pub fn generate_value_object_for_struct(identity: &Ident, data: DataStruct) -> T
         #getters
 
     )
-        .into()
+    .into()
 }
 
 struct MetaData(Vec<Field>, Vec<Ident>);
-struct VariantQuote { clone_quote: proc_macro2::TokenStream, partial_eq_quote: proc_macro2:: TokenStream, hash_quote: proc_macro2::TokenStream }
+struct VariantQuote {
+    clone_quote: proc_macro2::TokenStream,
+    partial_eq_quote: proc_macro2::TokenStream,
+    hash_quote: proc_macro2::TokenStream,
+}
 
-fn generate_value_object_for_enum(identity: &Ident, data: DataEnum) -> TokenStream {
+fn generate_value_object_for_enum(
+    identity: &Ident,
+    generics: &Generics,
+    data: DataEnum,
+) -> TokenStream {
     let variant_quotes: Vec<_> = data.variants.iter().map(|variant| {
         let variant_name = &variant.ident;
         match &variant.fields {
@@ -159,15 +177,18 @@ fn generate_value_object_for_enum(identity: &Ident, data: DataEnum) -> TokenStre
     }).collect();
 
     let (clone_quotes, partial_eq_quotes, hash_quotes) = variant_quotes.into_iter().fold(
-        (Vec::default(), Vec::default(), Vec::default()), |mut curr, element| {
+        (Vec::default(), Vec::default(), Vec::default()),
+        |mut curr, element| {
             curr.0.push(element.clone_quote);
             curr.1.push(element.partial_eq_quote);
             curr.2.push(element.hash_quote);
             curr
-        });
+        },
+    );
 
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
     quote::quote!(
-        impl ddd::traits::value_object::ValueObject for #identity {}
+        impl #impl_generics ddd::traits::value_object::ValueObject #ty_generics for #identity #where_clause {}
 
         impl Clone for #identity {
             fn clone(&self) -> Self {
@@ -195,6 +216,6 @@ fn generate_value_object_for_enum(identity: &Ident, data: DataEnum) -> TokenStre
                 }
             }
         }
-    ).into()
+    )
+    .into()
 }
-
