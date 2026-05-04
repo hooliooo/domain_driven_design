@@ -6,12 +6,12 @@ use std::hash::Hash;
 /// attributes are different.
 ///
 /// ```
-/// #![cfg(feature = "derive")]
 ///
-/// use ddd::Entity;
-/// use ddd::traits::entity::Entity;
 ///
-/// #[derive(ddd::Entity, Debug)]
+/// use kern::Entity;
+/// use kern::building_blocks::entity::Entity;
+///
+/// #[derive(kern::Entity, Debug)]
 /// pub struct Person {
 ///     #[entity_id(u32)]
 ///     id: u32,

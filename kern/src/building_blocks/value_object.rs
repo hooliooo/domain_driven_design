@@ -4,12 +4,12 @@ use std::hash::Hash;
 ///
 /// Two value objects are the same if all of their attributes are equal
 /// ```
-/// #![cfg(feature = "derive")]
 ///
-/// use ddd::ValueObject;
-/// use ddd::traits::value_object::ValueObject;
 ///
-/// #[derive(ddd::ValueObject, Debug)]
+/// use kern::ValueObject;
+/// use kern::building_blocks::value_object::ValueObject;
+///
+/// #[derive(kern::ValueObject, Debug)]
 /// pub struct Coordinate {
 ///     x: i32,
 ///     y: i32,
@@ -31,7 +31,7 @@ use std::hash::Hash;
 ///
 /// assert_ne!(c, d);
 ///
-/// #[derive(ddd::ValueObject, Debug)]
+/// #[derive(kern::ValueObject, Debug)]
 /// enum Message {
 ///     Quit,
 ///     Move { x: i32, y: i32 },
