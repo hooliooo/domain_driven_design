@@ -8,12 +8,16 @@ use crate::{
     building_blocks::domain_event::DynDomainEvent,
 };
 
+/// The TokioEventBus is the orchestrator between tokio's broadcast::Senders and the EventHandlers.
+/// It passes the domain events to the broadcast::Senders to send to EventHandlers which act on the
+/// domain events in a background process
 pub struct TokioEventBus {
     publishers: DashMap<&'static str, broadcast::Sender<Arc<dyn DynDomainEvent>>>,
     shutdown_tx: watch::Sender<bool>,
 }
 
 impl TokioEventBus {
+    /// Creates a new instance of the TokioEventBus
     pub fn new() -> Self {
         let (tx, _) = watch::channel(false);
         Self {
@@ -22,10 +26,14 @@ impl TokioEventBus {
         }
     }
 
+    /// Sends a shutdown signal to all handlers
     pub fn shutdown(&self) {
         let _ = self.shutdown_tx.send(true);
     }
 
+    /// Retrives the publisher for the topic or creates one if it doesn't exist yet for that topic
+    /// # Arguments
+    /// * `topic` - The topic the publisher will send domain events to
     fn get_publisher(&self, topic: &'static str) -> broadcast::Sender<Arc<dyn DynDomainEvent>> {
         let publisher = self.publishers.entry(topic).or_insert_with(|| {
             let (tx, _) = broadcast::channel(1024);
